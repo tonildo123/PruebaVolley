@@ -2,6 +2,7 @@ package com.example.programacion5.pruebavolley;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText nombre, apellido, mail, telefono, campoMensaje;
     private Spinner opcion;
     private String uri = "http://181.14.240.59/Portal/contacto-5/";
+    private Map parametros = new HashMap();
+    private StringRequest post;
 
     RequestQueue coladesolicitud;
 
@@ -94,7 +97,9 @@ public class MainActivity extends AppCompatActivity {
                 return super.getHeaders();
             }
         };
-        StringRequest post = new StringRequest(Request.Method.POST, uri,
+        coladesolicitud.add(get);
+
+       post = new StringRequest(Request.Method.POST, uri,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -124,34 +129,73 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> map = new HashMap<>();
-//                aqui van los parametro para el post
-                return super.getParams();
+
+                return parametros;
             }
         };
-        coladesolicitud.add(get);
+
+
+        enviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] formulario = new String[6];
+
+                opcion.getSelectedItem().toString();
+                apellido.getText();
+                nombre.getText();
+                mail.getText();
+                telefono.getText();
+                campoMensaje.getText();
+
+                parametros.keySet().add(opcion);
+                parametros.keySet().add(apellido);
+                parametros.keySet().add(nombre);
+                parametros.keySet().add(mail);
+                parametros.keySet().add(telefono);
+                parametros.keySet().add(campoMensaje);
+
+
+                if(parametros.size()!= 0){
+
+                    coladesolicitud.add(post);
+                }
+
+            }
+        });
+        opcion.getSelectedItem().toString();
+        apellido.setText("");
+        nombre.setText("");
+        mail.setText("");
+        telefono.setText("");
+        campoMensaje.setText("");
+
     }
 
 
-    public StringBuilder getFormParams
+    public void  getFormParams// pasamos los parametros parseados  en un Map
             (String pagFor) throws UnsupportedEncodingException {
         int init = 0;
         int sesion = 0;
         int nm = 0;
 
+
         Document doc = Jsoup.parse(pagFor);
 
+        Elements select = doc.getElementsByTag("select");
         Elements inputElements = doc.getElementsByTag("input");
         Elements textArea = doc.getElementsByTag("textarea");
-        Elements select = doc.getElementsByTag("select");
 
-        List<String> paramList = new ArrayList<String>();
+
+
         for(Element selecion : select){
             String key = selecion.attr("name");
             String value = selecion.attr("value");
             if (key.equals("Destinatario")) {
-                value = opcion.toString();
-            }}
+                value = opcion.getSelectedItem().toString();
+            }
+            if(value != null && key != null){
+                parametros.put(key, value);}
+        }
 
         for (Element inputElement : inputElements) {
             String key = inputElement.attr("name");
@@ -166,36 +210,36 @@ public class MainActivity extends AppCompatActivity {
                     if (key.equals("Email")) {
                         value = String.valueOf(mail.getText());
                     } else {
-                        if (key.equals("Telfono")) {
+                        if (key.equals("Telefono")) {
                             value = String.valueOf(telefono.getText());
                         }
-                        else{
-                            if(key.equals("form_id")){
 
-
-                            }
                          else{
                             if (key.equals("script_case_session") && sesion != 1 && !value.equals("")) {
                                 sesion = 1;
-                                paramList.add(key + "=" + URLEncoder.encode(value, "UTF-8"));
+                                parametros.put(key,URLEncoder.encode(value, "UTF-8"));
+
                             } else {
                                 if (key.equals("script_case_init") && init != 1 && !value.equals("")) {
                                     init = 1;
-                                    paramList.add(key + "=" + URLEncoder.encode(value, "UTF-8"));
+
+                                    parametros.put(key,URLEncoder.encode(value, "UTF-8") );
                                 } else {
                                     if (key.equals("nm_form_submit") && nm != 1 && !value.equals("")) {
                                         nm = 1;
-                                        paramList.add(key + "=" + URLEncoder.encode(value, "UTF-8"));
+                                        parametros.put(key, URLEncoder.encode(value, "UTF-8"));
+
                                     }
                                 }
                             }
-                        } }
+                        }
                     }
                 }
             }
             if(value != null && key != null){
                 if (!value.equals("") && !key.equals("") && !key.equals("script_case_session") && !key.equals("nm_form_submit") && !key.equals("script_case_init")) {
-                    paramList.add(key + "=" + URLEncoder.encode(value, "UTF-8"));
+                    parametros.put(key,URLEncoder.encode(value, "UTF-8") );
+
                 }
             }
         }
@@ -206,18 +250,14 @@ public class MainActivity extends AppCompatActivity {
             if (key.equals("Mensaje")) {
                 value = String.valueOf(campoMensaje.getText());
             }
+            if(value != null && key != null){
+                parametros.put(key, value);}
         }
 
 
-        // build parameters list
-        StringBuilder result = new StringBuilder();
-        for (String param : paramList) {
-            if (result.length() == 0) {
-                result.append(param);
-            } else {
-                result.append("&" + param);
-            }
-        }
-        return result;
     }
+
+
+
+
 }

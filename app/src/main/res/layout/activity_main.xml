@@ -58,7 +58,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:text="ejemplo@mmmm.com" />
 
     <TextView
         android:id="@+id/textView6"
@@ -71,7 +72,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="number" />
+        android:inputType="number"
+        android:text="ej : 381 155666777" />
 
     <TextView
         android:id="@+id/textView7"
