@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private String uri = "http://181.14.240.59/Portal/contacto-5/";
     private Map parametros = new HashMap();
     private StringRequest post;
+    private ArrayList formulario = new ArrayList();
 
     RequestQueue coladesolicitud;
 
@@ -138,30 +139,33 @@ public class MainActivity extends AppCompatActivity {
         enviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] formulario = new String[6];
 
-                opcion.getSelectedItem().toString();
-                apellido.getText();
-                nombre.getText();
-                mail.getText();
-                telefono.getText();
-                campoMensaje.getText();
+//                parametros
 
-                parametros.keySet().add(opcion);
-                parametros.keySet().add(apellido);
-                parametros.keySet().add(nombre);
-                parametros.keySet().add(mail);
-                parametros.keySet().add(telefono);
-                parametros.keySet().add(campoMensaje);
+                formulario.add(opcion.getSelectedItem().toString());
+                formulario.add(apellido.getText());
+                formulario.add(nombre.getText());
+                formulario.add(mail.getText());
+                formulario.add(telefono.getText());
+                formulario.add(campoMensaje.getText());
+
+
 
 
                 if(parametros.size()!= 0){
 
                     coladesolicitud.add(post);
                 }
+                limpiarCampos();
 
             }
+
         });
+
+
+    }
+
+    public void limpiarCampos() {
         opcion.getSelectedItem().toString();
         apellido.setText("");
         nombre.setText("");
@@ -188,16 +192,21 @@ public class MainActivity extends AppCompatActivity {
 
 
         for(Element selecion : select){
+            String[] s = new String[2];
             String key = selecion.attr("name");
             String value = selecion.attr("value");
             if (key.equals("Destinatario")) {
                 value = opcion.getSelectedItem().toString();
             }
             if(value != null && key != null){
-                parametros.put(key, value);}
+                s[0] = key;
+                s[1] = value;
+                formulario.add(s);
+            }
         }
 
         for (Element inputElement : inputElements) {
+            String[] s = new String[2];
             String key = inputElement.attr("name");
             String value = inputElement.attr("value");
 
@@ -217,17 +226,23 @@ public class MainActivity extends AppCompatActivity {
                          else{
                             if (key.equals("script_case_session") && sesion != 1 && !value.equals("")) {
                                 sesion = 1;
-                                parametros.put(key,URLEncoder.encode(value, "UTF-8"));
+                                s[0] = key;
+                                s[1] = URLEncoder.encode(value, "UTF-8");
+                                formulario.add(s);
+
 
                             } else {
                                 if (key.equals("script_case_init") && init != 1 && !value.equals("")) {
                                     init = 1;
-
-                                    parametros.put(key,URLEncoder.encode(value, "UTF-8") );
+                                    s[0] = key;
+                                    s[1] = URLEncoder.encode(value, "UTF-8");
+                                    formulario.add(s);
                                 } else {
                                     if (key.equals("nm_form_submit") && nm != 1 && !value.equals("")) {
                                         nm = 1;
-                                        parametros.put(key, URLEncoder.encode(value, "UTF-8"));
+                                        s[0] = key;
+                                        s[1] = URLEncoder.encode(value, "UTF-8");
+                                        formulario.add(s);
 
                                     }
                                 }
@@ -238,8 +253,9 @@ public class MainActivity extends AppCompatActivity {
             }
             if(value != null && key != null){
                 if (!value.equals("") && !key.equals("") && !key.equals("script_case_session") && !key.equals("nm_form_submit") && !key.equals("script_case_init")) {
-                    parametros.put(key,URLEncoder.encode(value, "UTF-8") );
-
+                    s[0] = key;
+                    s[1] = URLEncoder.encode(value, "UTF-8");
+                    formulario.add(s);
                 }
             }
         }
@@ -251,7 +267,10 @@ public class MainActivity extends AppCompatActivity {
                 value = String.valueOf(campoMensaje.getText());
             }
             if(value != null && key != null){
-                parametros.put(key, value);}
+                String[] s = new String[2];
+                s[0] = key;
+                s[1] = value;
+                formulario.add(s);}
         }
 
 
