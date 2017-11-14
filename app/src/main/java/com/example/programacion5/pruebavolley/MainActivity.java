@@ -1,5 +1,6 @@
 package com.example.programacion5.pruebavolley;
 
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -36,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Map parametros = new HashMap();
     private StringRequest post;
     private ArrayList formulario = new ArrayList();
-
-    RequestQueue coladesolicitud;
+    private RequestQueue coladesolicitud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-//                parametros
 
                 formulario.add(opcion.getSelectedItem().toString());
                 formulario.add(apellido.getText());
@@ -150,6 +149,9 @@ public class MainActivity extends AppCompatActivity {
                 formulario.add(campoMensaje.getText());
 
 
+                for(int i=0; i < formulario.size(); i++){
+                 parametros.put(formulario.get(i), i);
+                }
 
 
                 if(parametros.size()!= 0){
@@ -161,8 +163,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-
-
     }
 
     public void limpiarCampos() {
@@ -275,8 +275,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-
 
 
 }
